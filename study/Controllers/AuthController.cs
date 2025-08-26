@@ -24,8 +24,21 @@ public class AuthController(IAuthService authService) : ControllerBase
             return BadRequest("Username/password is required");
         var check = authService.Register(req.Username,req.Password);
         if (!check) return Conflict("Username is existed or invalid");
-        return Ok("Registered");
+        return Ok($"Registered: {req.Username}");
     }
+
+
+    [HttpDelete("delete")]
+    [Authorize(Roles = "admin")]
+    public IActionResult Delete([FromBody] DeleteRequest req) 
+    {
+        if (string.IsNullOrEmpty(req.Username) || string.IsNullOrEmpty(req.Password))
+            return BadRequest("Username/password is required");
+        var check = authService.Delete(req.Username);
+        if (!check) return Conflict("Username is existed or invalid");
+        return Ok($"Deleted: {req.Username}");
+    }
+
 
     [HttpGet("secure")]
     [Authorize]

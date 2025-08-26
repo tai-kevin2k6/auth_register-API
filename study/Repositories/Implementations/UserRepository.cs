@@ -57,7 +57,6 @@ public class UserRepository(string cn) : IUserRepository
                             VALUES(@username, @password, 'user')";
         using var conn = new SqlConnection(cn);
         conn.Open();
-
         using var cmd = new SqlCommand(sql, conn);
         cmd.Parameters.Add(new SqlParameter("@username", SqlDbType.NVarChar, 256) { Value = username });
         cmd.Parameters.Add(new SqlParameter("@password", SqlDbType.NVarChar, 256) { Value = password });
@@ -70,5 +69,16 @@ public class UserRepository(string cn) : IUserRepository
             Password = password,
             Role = role
         };
+    }
+    public bool DeleteUser(string username)
+    {
+        int cnt = 0;
+        const string sql = @"DELETE FROM Users WHERE Username = @username";
+        using var conn = new SqlConnection(cn);
+        conn.Open();
+        using var cmd = new SqlCommand(sql, conn);
+        cmd.Parameters.Add(new SqlParameter("@username", SqlDbType.NVarChar, 256) { Value = username });
+        cnt = cmd.ExecuteNonQuery();
+        if (cnt == 0) return false; else return true;
     }
 }

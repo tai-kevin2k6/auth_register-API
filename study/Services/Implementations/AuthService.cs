@@ -22,5 +22,12 @@ public class AuthService(IUserRepository users, JwtHelper jwt) : IAuthService
         users.CreateUser(username, password, "user");
         return true;
     }
+
+    public bool Delete(string username) 
+    {
+        if (string.IsNullOrEmpty(username) || !users.UsernameExist(username)) return false;
+        users.DeleteUser(username);
+        return true;
+    }
 }
 
