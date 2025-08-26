@@ -73,7 +73,7 @@ public class UserRepository(string cn) : IUserRepository
     public bool DeleteUser(string username)
     {
         int cnt = 0;
-        const string sql = @"DELETE FROM Users WHERE Username = @username";
+        const string sql = @"DELETE FROM Users WHERE [Username] = @username";
         using var conn = new SqlConnection(cn);
         conn.Open();
         using var cmd = new SqlCommand(sql, conn);
