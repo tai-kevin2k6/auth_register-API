@@ -28,7 +28,7 @@ public class AuthController(IAuthService authService) : ControllerBase
     }
 
 
-    [HttpDelete("delete")]
+    [HttpDelete("delete/{username}")]
     [Authorize(Roles = "admin")]
     public IActionResult Delete([FromBody] DeleteRequest req) 
     {
