@@ -28,14 +28,14 @@ public class AuthController(IAuthService authService) : ControllerBase
     }
 
 
-    [HttpDelete("delete")]
+    [HttpDelete("delete/{username}")]
     [Authorize(Roles = "admin")]
     public IActionResult Delete([FromBody] DeleteRequest req) 
     {
-        if (string.IsNullOrEmpty(req.Username) || string.IsNullOrEmpty(req.Password))
-            return BadRequest("Username/password is required");
+        if (string.IsNullOrEmpty(req.Username))
+            return BadRequest("Username is required");
         var check = authService.Delete(req.Username);
-        if (!check) return Conflict("Username is existed or invalid");
+        if (!check) return Conflict("Username is not found!");
         return Ok($"Deleted: {req.Username}");
     }
 
