@@ -8,9 +8,10 @@ public class AuthService(IUserRepository users, JwtHelper jwt) : IAuthService
 {
     public LoginResponse? Login(string username, string password)
     {
-        var user = users.ValidateUser(username, password);
+        var user = users.ValidateUser(username);
         if (user is null) return null;
-
+        var hash = BCrypt.Net.BCrypt.Verify(password, user.PasswordHash);
+        if (!hash) return null;
         var token = jwt.CreateJwt(user.Id, user.Username, user.Role);
         return new LoginResponse { AccessToken = token, Role = user.Role };
     }
@@ -19,7 +20,9 @@ public class AuthService(IUserRepository users, JwtHelper jwt) : IAuthService
     {
         if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password)) return false;
         if (users.UsernameExist(username)) return false;
-        users.CreateUser(username, password, "user");
+
+        var hash = BCrypt.Net.BCrypt.HashPassword(password);
+        users.CreateUser(username, hash, "user");
         return true;
     }
 
@@ -30,4 +33,3 @@ public class AuthService(IUserRepository users, JwtHelper jwt) : IAuthService
         return true;
     }
 }
-

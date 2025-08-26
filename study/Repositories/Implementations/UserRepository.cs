@@ -8,20 +8,19 @@ namespace study.Repositories.Implementations;
 
 public class UserRepository(string cn) : IUserRepository
 {
-    public User? ValidateUser(string username, string password)
+    public User? ValidateUser(string username)
     {
         string sql = @"SELECT   [Id]
                                 ,[Username]
                                 ,[Password]
                                 ,[Role]
                     FROM [user-profile].[dbo].[Users]
-                    WHERE [Username] = @username AND [Password] = @password";
+                    WHERE [Username] = @username";
         using var conn = new SqlConnection(cn);
         conn.Open();
 
         using var cmd = new SqlCommand(sql, conn);
         cmd.Parameters.Add(new SqlParameter("@username", SqlDbType.NVarChar, 256) { Value = username });
-        cmd.Parameters.Add(new SqlParameter("@password", SqlDbType.NVarChar, 256) { Value = password });
 
         using var reader = cmd.ExecuteReader();
 
@@ -31,7 +30,7 @@ public class UserRepository(string cn) : IUserRepository
         {
             Id = reader.GetInt32(0),
             Username = reader.GetString(1),
-            Password = reader.GetString(2),
+            PasswordHash = reader.GetString(2),
             Role = reader.GetString(3)
         };
     }
@@ -66,7 +65,7 @@ public class UserRepository(string cn) : IUserRepository
         {
             Id = id,
             Username = username,
-            Password = password,
+            PasswordHash = password,
             Role = role
         };
     }
