@@ -1,4 +1,4 @@
-﻿namespace study.Entities;
+﻿namespace study.Model.Entities;
 public class User
 {
     public int Id { get; set; } = default!;

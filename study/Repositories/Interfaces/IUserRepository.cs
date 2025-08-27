@@ -1,4 +1,4 @@
-﻿using study.Entities;
+﻿using study.Model.Entities;
 namespace study.Repositories.Interfaces;
 
 public interface IUserRepository
