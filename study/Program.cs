@@ -12,6 +12,10 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
+builder.Services.Configure<Microsoft.AspNetCore.Http.Features.FormOptions>(o =>
+{
+    o.MultipartBodyLengthLimit = 50L * 1024 * 1024;
+});
 
 var cn = builder.Configuration.GetConnectionString("Default")
          ?? throw new Exception("Missing ConnectionStrings");
@@ -71,6 +75,8 @@ app.UseSwaggerUI();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseStaticFiles();
 
 app.MapControllers();
 
