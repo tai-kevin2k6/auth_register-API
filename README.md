@@ -1,0 +1,2 @@
+Login - Register - Delete user API;
+JWT token, hash password
