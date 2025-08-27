@@ -1,2 +1,2 @@
-Login - Register - Delete user API
+Login - Register - Delete user API;
 JWT token, hash password
