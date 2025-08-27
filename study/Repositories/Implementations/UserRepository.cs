@@ -14,7 +14,7 @@ public class UserRepository(string cn) : IUserRepository
                                 ,[Username]
                                 ,[Password]
                                 ,[Role]
-                    FROM [user-profile].[dbo].[Users]
+                    FROM [Users].[dbo].[userprofile]
                     WHERE [Username] = @username";
         using var conn = new SqlConnection(cn);
         conn.Open();
@@ -38,7 +38,7 @@ public class UserRepository(string cn) : IUserRepository
     public bool UsernameExist(string username) 
     {
         string sql = @"SELECT [Username]
-                    FROM [user-profile].[dbo].[Users]
+                    FROM [Users].[dbo].[userprofile]
                     WHERE [Username] = @username";
         using var conn = new SqlConnection(cn);
         conn.Open();
@@ -51,7 +51,7 @@ public class UserRepository(string cn) : IUserRepository
     
     public User CreateUser(string username, string password, string role = "user")
     {
-        const string sql = @"INSERT INTO Users(Username, Password, Role) 
+        const string sql = @"INSERT INTO userprofile(Username, Password, Role) 
                             OUTPUT INSERTED.Id
                             VALUES(@username, @password, 'user')";
         using var conn = new SqlConnection(cn);
@@ -72,7 +72,7 @@ public class UserRepository(string cn) : IUserRepository
     public bool DeleteUser(string username)
     {
         int cnt = 0;
-        const string sql = @"DELETE FROM Users WHERE Username = @username";
+        const string sql = @"DELETE FROM userprofile WHERE Username = @username";
         using var conn = new SqlConnection(cn);
         conn.Open();
         using var cmd = new SqlCommand(sql, conn);
