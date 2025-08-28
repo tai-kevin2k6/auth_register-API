@@ -1,5 +1,4 @@
-﻿using study.Entities;
-using study.Model.DTOs;
+﻿using study.Model.DTOs;
 namespace study.Services.Interfaces;
 public interface IAuthService
 {

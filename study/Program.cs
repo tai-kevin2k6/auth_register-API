@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using study.Helpers;
+using study.Model.DTOs;
 using study.Repositories.Implementations;
 using study.Repositories.Interfaces;
 using study.Services.Implementations;
@@ -12,18 +13,10 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
-builder.Services.Configure<Microsoft.AspNetCore.Http.Features.FormOptions>(o =>
-{
-    o.MultipartBodyLengthLimit = 50L * 1024 * 1024;
-});
-
-builder.Services.Configure<study.Model.DTOs.UploadOptions>(
-    builder.Configuration.GetSection("Upload"));
-    
 var cn = builder.Configuration.GetConnectionString("Default")
          ?? throw new Exception("Missing ConnectionStrings");
-
-
+builder.Services.AddScoped<IUserRepository>(sp =>
+    new UserRepository(cn));
 
 // Bind Jwt options
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
@@ -53,6 +46,8 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
+        Description = "JWT token. Example: Bearer {token}",
+        Name = "Authorization",
         In = ParameterLocation.Header,
         Type = SecuritySchemeType.Http,
         Scheme = "bearer"
@@ -66,11 +61,8 @@ builder.Services.AddSwaggerGen(c =>
 
 // DI
 builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddSingleton<JwtHelper>();
-builder.Services.AddScoped<IUserRepository>(sp =>
-    new UserRepository(cn));
-
+builder.Services.AddScoped<IFileService,FileService>();
 var app = builder.Build();
 
 app.UseSwagger();

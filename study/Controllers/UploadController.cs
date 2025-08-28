@@ -11,8 +11,10 @@ namespace study.Controllers;
 [AllowAnonymous]
 public class UploadController(IFileService fileService) : ControllerBase
 {
+
     [HttpPost("upload")]
-    public async Task<ActionResult<UploadResult>> Upload([FromForm] IFormFile file)
+    [Consumes("multipart/form-data")]
+    public async Task<ActionResult<UploadResult>> Upload(IFormFile file)
     {
         try
         {
@@ -25,11 +27,11 @@ public class UploadController(IFileService fileService) : ControllerBase
         }
         catch (ArgumentException ex) // empty file
         {
-            return BadRequest(new { error = ex.Message });
+            return BadRequest(new { error = "empty file" });
         }
-        catch (IOException) // trùng tên (hiếm) / lỗi IO
+        catch (Exception ex) // trùng tên (hiếm) / lỗi IO
         {
-            return StatusCode(500, new { error = "Cannot save file." });
+            return StatusCode(500, new { error = ex.ToString() });
         }
     }
 }
