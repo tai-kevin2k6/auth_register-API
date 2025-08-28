@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using study.Model.DTOs;
+using study.Services.Implementations;
 using study.Services.Interfaces;
 
 namespace study.Controllers;
@@ -39,7 +40,6 @@ public class AuthController(IAuthService authService) : ControllerBase
         return Ok($"Deleted: {req.Username}");
     }
 
-
     [HttpGet("secure")]
     [Authorize]
     public IActionResult Secure() => Ok("Secure OK");
@@ -47,4 +47,4 @@ public class AuthController(IAuthService authService) : ControllerBase
     [HttpGet("admin")]
     [Authorize(Roles = "admin")]
     public IActionResult admin() => Ok("Admin OK");
-}
+};
