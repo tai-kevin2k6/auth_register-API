@@ -6,78 +6,37 @@ using System.Collections.Generic;
 using System.Data;
 namespace study.Repositories.Implementations;
 
-public class UserRepository(string cn) : IUserRepository
+public class UserRepository(UsersContext ctx) : IUserRepository
 {
     public Userprofile? ValidateUser(string username)
     {
-        string sql = @"SELECT   [Id]
-                                ,[Username]
-                                ,[PasswordHash]
-                                ,[Role]
-                    FROM [Users].[dbo].[userprofile]
-                    WHERE [Username] = @username";
-        using var conn = new SqlConnection(cn);
-        conn.Open();
-
-        using var cmd = new SqlCommand(sql, conn);
-        cmd.Parameters.Add(new SqlParameter("@username", SqlDbType.NVarChar, 256) { Value = username });
-
-        using var reader = cmd.ExecuteReader();
-
-        if (!reader.Read()) return null;
-
-        return new Userprofile
-        {
-            Id = reader.GetInt32(0),
-            Username = reader.GetString(1),
-            PasswordHash = reader.GetString(2),
-            Role = reader.GetString(3)
-        };
+        return ctx.Userprofiles.FirstOrDefault(u => u.Username == username);
     }
 
     public bool UsernameExist(string username) 
     {
-        string sql = @"SELECT [Username]
-                    FROM [Users].[dbo].[userprofile]
-                    WHERE [Username] = @username";
-        using var conn = new SqlConnection(cn);
-        conn.Open();
-
-        using var cmd = new SqlCommand(sql, conn);
-        cmd.Parameters.Add(new SqlParameter("@username", SqlDbType.NVarChar, 256) { Value = username });
-        using var reader = cmd.ExecuteReader();
-        if (!reader.Read()) return false; else return true;
+        return ctx.Userprofiles.Any(u => u.Username == username);
     }
     
-    public Userprofile CreateUser(string username, string password, string role = "user")
+    public bool CreateUser(string username, string password, string role = "user")
     {
-        const string sql = @"INSERT INTO userprofile(Username, PasswordHash, Role) 
-                            OUTPUT INSERTED.Id
-                            VALUES(@username, @password, 'user')";
-        using var conn = new SqlConnection(cn);
-        conn.Open();
-        using var cmd = new SqlCommand(sql, conn);
-        cmd.Parameters.Add(new SqlParameter("@username", SqlDbType.NVarChar, 256) { Value = username });
-        cmd.Parameters.Add(new SqlParameter("@password", SqlDbType.NVarChar, 256) { Value = password });
-        cmd.Parameters.Add(new SqlParameter("@role", SqlDbType.NVarChar, 256) { Value = role });
-        int id = (int)cmd.ExecuteScalar();
-        return new Userprofile
+        if (UsernameExist(username)) return false;
+        var user = new Userprofile()
         {
-            Id = id,
             Username = username,
             PasswordHash = password,
             Role = role
         };
+        ctx.Userprofiles.Add(user);
+        ctx.SaveChanges();
+        return true;
     }
     public bool DeleteUser(string username)
     {
-        int cnt = 0;
-        const string sql = @"DELETE FROM userprofile WHERE Username = @username";
-        using var conn = new SqlConnection(cn);
-        conn.Open();
-        using var cmd = new SqlCommand(sql, conn);
-        cmd.Parameters.Add(new SqlParameter("@username", SqlDbType.NVarChar, 256) { Value = username });
-        cnt = cmd.ExecuteNonQuery();
-        if (cnt == 0) return false; else return true;
+        var user = ctx.Userprofiles.FirstOrDefault(u => u.Username == username);
+        if (user == null) return false;
+        ctx.Userprofiles.Remove(user);
+        ctx.SaveChanges();
+        return true;
     }
 }

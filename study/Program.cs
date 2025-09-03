@@ -25,10 +25,6 @@ builder.Services.AddCors(options =>
     });
 });
 
-var cn = builder.Configuration.GetConnectionString("Default")
-         ?? throw new Exception("Missing ConnectionStrings");
-builder.Services.AddScoped<IUserRepository>(sp =>
-    new UserRepository(cn));
 
 builder.Services.AddDbContext<UsersContext>(opt =>
     opt.UseSqlServer(builder.Configuration.GetConnectionString("Users")));
@@ -78,6 +74,7 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddSingleton<JwtHelper>();
 builder.Services.AddScoped<IFileService,FileService>();
+builder.Services.AddScoped<IUserRepository,UserRepository>();
 var app = builder.Build();
 app.UseCors("AllowAll");
 app.UseSwagger();

@@ -5,6 +5,6 @@ public interface IUserRepository
 {
     Userprofile? ValidateUser(string username);
     bool UsernameExist(string username);
-    Userprofile CreateUser(string username, string password, string role);
+    bool CreateUser(string username, string password, string role);
     bool DeleteUser(string username);
 }
