@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using study.Helpers;
 using study.Model.DTOs;
+using study.Model.Entities;
 using study.Repositories.Implementations;
 using study.Repositories.Interfaces;
 using study.Services.Implementations;
@@ -27,6 +29,9 @@ var cn = builder.Configuration.GetConnectionString("Default")
          ?? throw new Exception("Missing ConnectionStrings");
 builder.Services.AddScoped<IUserRepository>(sp =>
     new UserRepository(cn));
+
+builder.Services.AddDbContext<UsersContext>(opt =>
+    opt.UseSqlServer(builder.Configuration.GetConnectionString("Users")));
 
 // Bind Jwt options
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
