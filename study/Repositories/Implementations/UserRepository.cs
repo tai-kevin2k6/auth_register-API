@@ -8,11 +8,11 @@ namespace study.Repositories.Implementations;
 
 public class UserRepository(string cn) : IUserRepository
 {
-    public User? ValidateUser(string username)
+    public Userprofile? ValidateUser(string username)
     {
         string sql = @"SELECT   [Id]
                                 ,[Username]
-                                ,[Password]
+                                ,[PasswordHash]
                                 ,[Role]
                     FROM [Users].[dbo].[userprofile]
                     WHERE [Username] = @username";
@@ -26,7 +26,7 @@ public class UserRepository(string cn) : IUserRepository
 
         if (!reader.Read()) return null;
 
-        return new User
+        return new Userprofile
         {
             Id = reader.GetInt32(0),
             Username = reader.GetString(1),
@@ -49,9 +49,9 @@ public class UserRepository(string cn) : IUserRepository
         if (!reader.Read()) return false; else return true;
     }
     
-    public User CreateUser(string username, string password, string role = "user")
+    public Userprofile CreateUser(string username, string password, string role = "user")
     {
-        const string sql = @"INSERT INTO userprofile(Username, Password, Role) 
+        const string sql = @"INSERT INTO userprofile(Username, PasswordHash, Role) 
                             OUTPUT INSERTED.Id
                             VALUES(@username, @password, 'user')";
         using var conn = new SqlConnection(cn);
@@ -61,7 +61,7 @@ public class UserRepository(string cn) : IUserRepository
         cmd.Parameters.Add(new SqlParameter("@password", SqlDbType.NVarChar, 256) { Value = password });
         cmd.Parameters.Add(new SqlParameter("@role", SqlDbType.NVarChar, 256) { Value = role });
         int id = (int)cmd.ExecuteScalar();
-        return new User
+        return new Userprofile
         {
             Id = id,
             Username = username,

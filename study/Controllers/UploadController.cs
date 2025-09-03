@@ -15,7 +15,7 @@ public class UploadController(IFileService fileService) : ControllerBase
     [HttpPost("upload")]
     [Consumes("multipart/form-data")]
     public async Task<ActionResult<UploadResult>> Upload(IFormFile file)
-    {
+        {
         try
         {
             var result = await fileService.SaveImageAsync(file, HttpContext);

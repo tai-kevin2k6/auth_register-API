@@ -12,6 +12,16 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
+// Config CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
 
 var cn = builder.Configuration.GetConnectionString("Default")
          ?? throw new Exception("Missing ConnectionStrings");
@@ -64,7 +74,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddSingleton<JwtHelper>();
 builder.Services.AddScoped<IFileService,FileService>();
 var app = builder.Build();
-
+app.UseCors("AllowAll");
 app.UseSwagger();
 app.UseSwaggerUI();
 

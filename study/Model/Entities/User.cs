@@ -1,9 +1,0 @@
-﻿namespace study.Model.Entities;
-public class User
-{
-    public int Id { get; set; } = default!;
-    public string Username { get; set; } = default!;
-    public string PasswordHash { get; set; } = default!; // demo: plaintext; prod: hash + salt
-    public string Role { get; set; } = "user";
-}
-
