@@ -13,6 +13,7 @@ using System.Text;
 
 
 var builder = WebApplication.CreateBuilder(args);
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddControllers();
 // Config CORS
 builder.Services.AddCors(options =>
