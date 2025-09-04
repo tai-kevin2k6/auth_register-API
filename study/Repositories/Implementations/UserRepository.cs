@@ -1,6 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.IdentityModel.Tokens;
-using study.Model.Entities;
+using study.Model.Entities.User;
 using study.Repositories.Interfaces;
 using System.Collections.Generic;
 using System.Data;

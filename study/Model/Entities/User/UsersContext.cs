@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
-namespace study.Model.Entities;
+namespace study.Model.Entities.User;
 
 public partial class UsersContext : DbContext
 {

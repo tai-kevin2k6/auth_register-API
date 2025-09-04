@@ -4,7 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using study.Helpers;
 using study.Model.DTOs;
-using study.Model.Entities;
+using study.Model.Entities.User;
 using study.Repositories.Implementations;
 using study.Repositories.Interfaces;
 using study.Services.Implementations;
